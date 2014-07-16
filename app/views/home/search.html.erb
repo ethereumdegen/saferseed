@@ -1,0 +1,122 @@
+
+
+<%  query = params['query'] %>
+
+<div class="container">
+<h3>Results for <%= query %>...</h3>
+
+
+<%
+require 'amatch'
+
+ results = []
+ count = 0
+ threshold = 5
+ m = Amatch::Levenshtein.new(query)
+
+User.all.each do |user|
+	added = false
+	rating = m.match(user.getFullName)
+
+	if(rating < threshold && !added)
+	results += ([[rating,user]])
+	added = true
+    end
+
+    rating = m.match(user.getFirstName)
+
+	if(rating < threshold && !added)	
+	results += ([[rating,user]])
+	added = true
+	end
+
+	rating = m.match(user.getLastName)
+
+	if(rating < threshold && !added)
+		results += ([[rating,user]])
+	end
+
+end
+
+Group.all.each do |group|
+
+	rating = m.match(group.getName)
+
+	if(rating < threshold )
+		results += ([[rating,group]])
+	end
+
+	
+
+end
+
+
+
+%>
+
+
+
+<% results.sort{|r1,r2| r1[0] <=> r2[0]}.each do |result| %>
+<% object = result[1] %>
+
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+
+<% if(object.instance_of?(User)) %>
+<a href="<%=result[1].getPageLink%>">
+<%= result[1].getFullName %>
+</a>
+<% end %>
+
+<% if(object.instance_of?(Group)) %>
+<a href="<%=result[1].getPageLink%>">
+<%= result[1].getName %>
+</a>
+<% end %>
+
+</div>
+</div>
+
+
+
+
+<%end%>
+
+
+
+
+
+<% User.all.each do |user| %>
+<%if(user.getFullName == query)%>
+
+
+
+
+<a href="<%= user.getPageLink %>">
+<li><%= user.getFullName %><li>
+</a>
+
+
+<% end %>
+<% end %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>

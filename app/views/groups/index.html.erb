@@ -1,0 +1,428 @@
+
+
+<div class="container">
+
+<% 
+
+
+coname  = params[:id]
+coname = coname.gsub('%20', ' ')
+
+%>
+
+<% thisgroup = Group.find_by(name: coname) %>
+
+<% if(thisgroup) %>
+
+
+
+
+
+<div class="column one-fourth">
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+
+<h2 style="text-align:center"> <%= thisgroup[:name] %>  <%  if(thisgroup.createdRecently) %> <span class='label label-default'>New</span> <% end %> </h2>
+
+</div>
+<div class="panel-body">
+
+	
+	
+	<ul class="list-group"> 
+	<li class="list-group-item" >Location: <%= thisgroup[:location] %></li>
+	<li class="list-group-item" >Founded: ??</li>
+	<li class="list-group-item" >Home Page: <%= thisgroup[:webaddress] %></li>
+	<li class="list-group-item">Email: <%= thisgroup[:email] %></li>
+	</ul>
+
+
+<hr>
+
+
+
+
+
+
+ <div class="well" >
+
+<!-- Member Thumbnails -->
+<!--
+<div class="col-xs-6 col-md-3">
+<a href="#" class="thumbnail"> <% image_tag "seed.png", size:"50",class:"crop" %> </a>
+</div>
+<div class="col-xs-6 col-md-3">
+<a href="#" class="thumbnail"> <% image_tag "shield.png", size:"50",class:"crop" %> </a>
+</div>
+<div class="col-xs-6 col-md-3">
+<a href="#" class="thumbnail"> <% image_tag "seed.png", size:"50",class:"crop" %> </a>
+ </div>
+-->
+<h4>Members</h4>
+<ul class="memberlist">
+<% User.all.each do |user| %>
+<%if(thisgroup.hasMember(user))%>
+<a href="<%= user.getPageLink %>">
+<li><%= user.getFullName %><li>
+</a>
+<% end %>
+<% end %>
+</ul>
+
+</div>
+<% if(current_user and !thisgroup.hasMember(current_user))%>
+
+
+  <div id="joinalert" class="alert alert-success alert-dismissable" style="display:none;width:100%;">
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+  <strong>Success!</strong> Your request has been sent.
+</div>
+
+
+ <button onclick="JoinGroup()" id="joinbutton" type="button" class="btn btn-default " style="width:100%">
+  <span class="glyphicon glyphicon-plus-sign"></span> Join
+</button>
+
+
+
+<% end %>
+<hr>
+
+<div class="container">
+
+<!-- Watcher Thumbnails -->
+<!--
+<div class="col-xs-6 col-md-3">
+<a href="#" class="thumbnail"> <% image_tag "seed.png", size:"50",class:"crop" %> </a>
+</div>
+<div class="col-xs-6 col-md-3">
+<a href="#" class="thumbnail"> <% image_tag "shield.png", size:"50",class:"crop" %> </a>
+</div>
+<div class="col-xs-6 col-md-3">
+<a href="#" class="thumbnail"> <% image_tag "seed.png", size:"50",class:"crop" %> </a>
+ </div>
+-->
+<h4>Watchers</h4>
+<ul class="memberlist">
+<% User.all.each do |user| %>
+<%if(thisgroup.hasWatcher(user))%>
+<a href="<%= user.getPageLink %>">
+<li><%= user.getFullName %><li>
+</a>
+<% end %>
+<% end %>
+</ul>
+
+
+</div>
+
+<% if(current_user and !thisgroup.hasWatcher(current_user))%>
+
+  <div id="watchalert" class="alert alert-info alert-dismissable" style="display:none;width:100%;">
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+   You will receive notifications from this group.
+</div>
+
+<button onclick="WatchGroup()" id="watchbutton" type="button" class="btn btn-default " style="width:100%">
+  <span class="glyphicon glyphicon-eye-open"></span> Watch
+</button>
+<% end %>
+
+</div>
+</div>
+
+</div>
+
+<div class="column three-fourths">
+
+
+
+	<div class="panel panel-default">
+
+
+  <div class="panel-body">
+
+    <div id="loadingbar" class="progress progress-striped active">
+  <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+    <span class="sr-only">45% Complete</span>
+  </div>
+</div>
+
+  
+   <%= javascript_include_tag "//www.google.com/jsapi", "chartkick" %>
+ 
+<% pieData = [[ thisgroup.getName , thisgroup.getSelfOwnership ]] 
+
+User.all.each do |user|
+
+if(user.getOwnershipOfGroup(thisgroup) > 0)
+pieData += [[user.getFullName, user.getOwnershipOfGroup(thisgroup)]]
+end
+
+end
+
+%>
+
+
+
+ <%= pie_chart pieData, id: "users-chart", height: "300px", colors: @CHARTCOLORS, library: { } %>
+
+
+  </div>
+  <div class="panel-footer">
+<ul class="nav nav-pills nav-justified">
+  <li class="active"><a href="#">Ownership</a></li>
+  <li><a href="#">Activity</a></li>
+  <li><a href="#">Growth</a></li>
+</ul>
+  </div>
+
+</div>
+
+<% if(current_user and thisgroup.hasMember(current_user)) %>
+<%= form_for :newpost, url: {action: "createpost"}, html: {class: "form-group"} do |f| %>
+
+<%= f.hidden_field :groupid, :value => thisgroup.getId %>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title"> Post a Message
+    <%= f.submit "Submit" , class: "btn btn-mini btn-primary pull-right", style:"padding:3px;margin-top:-5px" %>
+  </h3>
+  </div>
+<div class="panel-body">
+   <%= f.text_area(:text, style: 'width:100%') %>
+</div>
+</div>
+
+<% end %>
+<% end %>
+<!-- Activity feed -->
+
+
+
+<% Wallpost.all.order('created_at DESC').each do |post| %>
+<%if(post.getGroup == thisgroup)%> 
+
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+
+
+
+<%if(post.getPostType == "message")%>
+   <span class="glyphicon glyphicon-envelope"></span> 
+
+   <a href="<%= post.getUser.getPageLink%>">
+   <%= post.getUser.getFullName %></a> left a message.
+   <% end %>
+
+   <%if(post.getPostType == "joinedgroup")%>
+   <span class="glyphicon glyphicon-plus-sign"></span> 
+
+  <a href="<%= post.getUser.getPageLink%>">
+   <%= post.getUser.getFullName %></a> joined this group.
+  
+   <% end %>
+
+   <%if(post.getPostType == "leftgroup")%>
+   <span class="glyphicon glyphicon-minus-sign"></span> 
+
+   <%= post.getUser.getFullName %> left this group.
+   <% end %>
+
+   <%if(post.getPostType == "watchinggroup")%>
+   <span class="glyphicon glyphicon-eye-open"></span> 
+
+   <%= post.getUser.getFullName %> started watching this group.
+   <% end %>
+
+    <%if(post.getPostType == "givenshare")%>
+   <span class="glyphicon glyphicon-stats"></span> 
+
+   <%= post.getUser.getFullName %> gained <%= post.getText %> ownership.
+   <% end %>
+
+
+<div class="activitytimestamp"><%= post.getTimeSince %></div>  
+  </h3>
+  </div>
+
+<% if(post.getText and post.getText.length > 0 and post.getPostType == "message") %>
+  <div class="panel-body">
+    <%= post.getText %>   
+  </div>
+<% end %>
+
+</div>
+
+
+<% end %>
+<% end %>
+
+
+
+<!-- 
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h2 class="panel-title">
+
+   <span class="glyphicon glyphicon-plus-sign"></span> 
+   Bob joined the group. 
+<div class="activitytimestamp">2 days ago.</div>
+	</h2>
+  </div>  
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+
+   <span class="glyphicon glyphicon-envelope"></span> 
+   Mike left a message.
+<div class="activitytimestamp">4 days ago.</div>  
+	</h3>
+  </div>
+  <div class="panel-body">
+    
+    Hello,
+
+    I am interested in your company.
+
+    Thanks,
+
+    Mike
+
+
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+
+   <span class="glyphicon glyphicon-minus-sign"></span> 
+   Joe left the group. 
+	<div class="activitytimestamp">10 days ago.</div>  
+	</h3>
+  </div>  
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+
+   <span class="glyphicon glyphicon-eye-open"></span> 
+   Roger starting watching the group. 
+   <div class="activitytimestamp">14 days ago.</div>  
+
+	</h3>
+  </div>  
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+
+   <span class="glyphicon glyphicon-stats"></span> 
+   Jim took 1.2% ownership from Joe. 
+   <div class="activitytimestamp">14 days ago.</div>  
+
+	</h3>
+  </div>  
+</div>
+
+
+-->
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<% else %>
+
+The company <%= params[:id].gsub('%20', ' ') %> does not exist ! 404
+
+<% end %>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<%if(thisgroup)%> 
+<% content_for :head do %>
+
+
+  <script type="text/javascript">
+  /*var increment = 50;
+   w = parseInt(document.getElementById('loadingbar').style.width);
+  document.getElementById('loadingbar').style.width= (w + increment) +'%';
+*/
+  $( document ).ready(function() {
+     $( loadingbar ).hide()
+  });
+
+
+  function JoinGroup()
+  {
+    $.ajax({
+  type: "POST",
+  url: "joingroup",
+  data: { groupid: <%= thisgroup.getId %> }
+  })
+  .done(function( msg ) {
+
+     $("#joinbutton").hide();
+   $("#joinalert").fadeIn();
+
+   // alert( "Data Saved: " + msg );
+    
+
+
+  });
+  }
+
+    function WatchGroup()
+  {
+    $.ajax({
+  type: "POST",
+  url: "watchgroup",
+  data: { groupid: <%= thisgroup.getId %> }
+  })
+  .done(function( msg ) {
+
+     $("#watchbutton").hide();
+   $("#watchalert").fadeIn();
+
+   // alert( "Data Saved: " + msg );
+    
+
+
+  });
+  }
+
+  </script>
+
+<% end %>
+
+<% end %>

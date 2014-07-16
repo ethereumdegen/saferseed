@@ -1,0 +1,328 @@
+
+<%  @SHOWSIGNINBUTTON = false %>
+
+<%  @TUTORIALS = true %>
+
+
+	<% if @infosplash %>
+	
+	 <div class="jumbotron">
+     <div class="container">
+    
+
+    <div class="column three-fourths">
+
+      <div class="hugeslogan">
+       Intelligent Startup Management
+      </div>
+
+
+    </div>
+
+     <div class="column one-fourth">
+
+<div class="panel panel-default">
+  
+  <div class="panel-body">
+   
+         <a href="<%= site_url %>login"  >
+          <button class="btn btn-google-plus"><i class="fa fa-google-plus"></i> | Connect with Google</button>
+          </a>
+       
+        
+          <a href="<%= site_url %>login">
+       <button class="btn btn-linkedin"><i class="fa fa-linkedin"></i> | Connect with LinkedIn</button>
+      </a>
+
+
+           <a href="<%= site_url %>login" >
+         <button class="btn btn-facebook"><i class="fa fa-facebook"></i> | Connect with Facebook</button>
+          </a>
+        
+  </div>
+</div>
+
+          
+
+
+
+    </div>
+
+
+
+     </div>
+
+ </div>
+
+
+      <div class="container">
+
+      
+
+         <div class="column three-fourths">
+
+ <h1>Secure Your Startup</h1>
+        <p>Are you intelligently managing ownership of your new company? We help you plan and protect yourself against employee disagreements and severance.</p>
+
+       
+         <a href="explore"><button class="btn btn-success">Give more company ownership for more effort. &raquo;</button></a>
+
+        </div>
+
+  <div class="column one-fourth">
+
+   <%= image_tag("shield.png", :alt => "shield", :width => "160px" , :height => "200px") %>
+
+        </div>
+
+
+</div>
+<div class="container">
+
+       <div class="column one-fourth" style="margin-top:40px;">
+
+           <%= image_tag("seed.png", :alt => "seed", :width => "200px" , :height => "140px") %>
+
+        </div>
+
+        <div class="column three-fourths">
+
+  <h1>Impress Investors</h1>
+        <p>Give potential investors a clear window into your potential and your company's available equity.  Your company's ownership distribution is clearly displayed with dynamic and historical charts.   </p>
+
+   
+       <a href="explore"><button class="btn btn-success">Investors can bid on shares at any time right from your profile. &raquo;</button></a>
+
+        </div>
+
+
+
+
+
+
+
+    
+       
+       
+     
+   
+
+
+
+
+ </div>
+
+	<%else%> 
+       
+  <div class="content">
+
+    <div class="container">
+<div class="column one-fourth">
+
+
+
+       <div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">My Groups</div>
+ 
+
+  <!-- List group -->
+  <ul class="list-group">
+
+  
+     <!-- do a ruby for each here, check DB -->
+
+<% Group.find_each do |group| %>
+    <%if (group.hasMember(current_user)) %>
+  <li class="list-group-item hovercolor">   <a href="<%= group.getPageLink %>" class="fill"><%= group.getName %> </a></li> 
+    <% end %>
+<% end %>
+
+    
+
+
+
+    <li class="list-group-item">
+     <a href="<%= site_url %>newgroup"  >
+        <button class="btn btn-success" style="width:100%">List a new group &raquo;</button>
+      </a>
+
+    </li>
+
+  </ul>
+</div>
+
+
+
+</div>
+
+<div class="column three-fourths">
+<div class="panel panel-default">
+  <div class="panel-heading">Recent Activity</div>
+
+
+  <div class="panel-body">
+    
+      <% Privatemessage.all.order('created_at DESC').each do |msg| %>
+      <%if(msg.getReceivingUser == current_user)%> 
+
+         <!-- got a message.. need to format it nicely and add a boolean deleted to messages-->
+          <div class="panel panel-default">
+  <div class="panel-heading">
+    <h2 class="panel-title">
+
+    <%if(msg.getMessageType == "joingroup" and Group.find_by_id(msg.getText))%> 
+   <span class="glyphicon glyphicon-plus-sign"></span> 
+   <%= msg.getSendingUser.getFullName %> would like to join <%= Group.find_by_id(msg.getText).getName %>.
+  
+
+<button type="button" class="btn btn-default btn-success" onclick="javascript:acceptMessage(<%= msg.getId %>)">
+  <span class="glyphicon glyphicon-ok"></span> Accept
+</button>
+<button type="button" class="btn btn-default btn-alert">
+  <span class="glyphicon glyphicon-remove"></span> Reject
+</button>
+
+   <div class="activitytimestamp"> <%=msg.getTimeSince%></div>
+   <% end %>
+
+   <%if(msg.getMessageType == "privatemessage")%> 
+   <span class="glyphicon glyphicon-envelope"></span> 
+   <%= msg.getSendingUser.getFullName %> sent you a message. 
+  
+   <div class="activitytimestamp"> <%=msg.getTimeSince%></div>
+    </div>
+    <div class="panel-body">
+    <%= msg.getText %>
+
+   <% end %>
+
+
+
+ 
+  </h2>
+  </div>  
+</div>
+
+
+
+          <% end %>
+          <% end %>
+  </div>
+
+
+  <!-- Sample Table -->
+  <!--
+  <table class="table">
+   <tr>
+  <td>Jill</td>
+  <td>Smith</td> 
+  <td>50</td>
+</tr>
+<tr>
+  <td>Eve</td>
+  <td>Jackson</td> 
+  <td>94</td>
+</tr>
+  </table>
+-->
+
+</div>
+</div>
+
+
+
+
+</div>
+
+
+
+  <div class="container">
+
+<div class="panel panel-default">
+ 
+  <div class="panel-body">
+    <p>  advanced about info </p>
+
+
+
+
+
+<%= javascript_include_tag "//www.google.com/jsapi", "chartkick" %>
+ 
+
+
+ <%=line_chart [["2013-02-10 00:00:00 -0800", 11], ["2013-02-11 00:00:00 -0800", 6]], id: "users-chart", height: "300px", colors: @CHARTCOLORS, library: {backgroundColor: "#eee"} %>
+
+
+
+  </div>
+</div>
+
+
+<div class="well">
+ 
+  
+    <p>  advanced about info </p>
+  
+</div>
+
+
+   
+    </div>
+
+
+
+
+
+</div>
+
+	<% end %> 
+
+
+
+
+<% content_for :head do %>
+
+
+  <script type="text/javascript">
+
+  $( document ).ready(function() {
+    
+  });
+
+  
+function acceptMessage(id){
+   $.ajax({
+  type: "POST",
+  url: "acceptmessage",
+  data: { messageid: id }
+  })
+  .done(function( msg ) {
+
+     $("#message"+id).hide();     
+
+   //alert( "Data Saved: " + msg );  
+
+  });
+}
+  
+function rejectMessage(id){
+   $.ajax({
+  type: "POST",
+  url: "rejectmessage",
+  data: { messageid: id }
+  })
+  .done(function( msg ) {
+
+     $("#message"+id).hide();     
+
+   //alert( "Data Saved: " + msg );  
+
+  });
+}
+
+  </script>
+
+<% end %>
+

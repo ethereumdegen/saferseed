@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SaferSeed</title>
+  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <%= csrf_meta_tags %>
+ 
+
+  <%= yield :head %>
+
+
+  <script>
+
+  
+  function search(){
+    var query =  $('#SearchInput').val() ;
+    
+    window.location = "<%= site_url %>search/"+query;
+  }
+
+  </script>
+
+   
+</head>
+
+<body>
+
+
+   <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+
+<% if(signed_in?)  %>
+
+
+ <div class="navbar-inner">
+        <div class="container" style="padding:0px">
+         
+          <a class="navbar-brand" href="<%= site_url %>"> <%= @SITENAME %> </a>
+         
+           <div class="label label-primary pull-left">
+          Signed in as <%= current_user[:first_name] %>
+          </div>
+
+
+         <a href="<%= site_url %>logout"  >
+          <button type="submit" class="btn btn-primary pull-right" style="margin:10px;">Sign out</button>
+          </a>
+
+
+
+         <form action="javascript:search()" class="form-inline pull-right" style="margin:10px;">
+         <input type="text" class="form-control" placeholder="Search" id="SearchInput">
+       </form>
+
+
+
+
+
+       
+
+
+
+      
+
+          <div class="navbar-collapse collapse pull-right" style="margin:10px;">
+            <ul class="nav nav-pills ">
+             
+             
+              <li class="<%= 'active' if (params[:controller] == 'home' and params[:action] == 'index') %>" > <a href="<%= site_url %>">Home</a></li>
+              <li class="<%= 'active' if (params[:controller] == 'groups' and params[:action] == 'list') %>" ><a href="<%= site_url %>groups">Explore</a></li>
+              <li class="<%= 'active' if (params[:controller] == 'home' and params[:action] == 'settings') %>" ><a href="<%= site_url %>settings">Settings</a></li>
+
+            </ul>
+
+             
+          </div>
+
+        
+        </div>
+      </div>
+
+ <% else  %>
+
+
+ <div class="navbar-inner">
+        <div class="container" style="padding:0px;">
+         
+          <a class="navbar-brand" href="#"><%= @SITENAME %></a>
+         
+          
+          <% if(@SHOWSIGNINBUTTON)  %>
+         <a href="<%= site_url %>"  >
+          <button type="submit" class="btn btn-primary pull-right">Sign in</button>
+          </a>
+        <% end  %>
+
+        <form class="form-inline pull-right" role="form" style="margin:10px;">
+         <div class="form-group">
+             <input type="text" class="form-control " id="inputSearch" placeholder="Search">
+         </div>
+        </form>
+
+          <div class="navbar-collapse collapse pull-right" style="margin:10px;">
+            <ul class="nav nav-pills ">
+            <li class="<%= 'active' if (params[:controller] == 'home' and params[:action] == 'index') %>" > <a href="<%= site_url %>">Home</a></li>
+              <li class="<%= 'active' if (params[:controller] == 'groups' and params[:action] == 'list') %>" ><a href="<%= site_url %>groups">Explore</a></li>
+            
+            </ul>
+
+             
+          </div>
+
+        
+        </div>
+      </div>
+
+
+
+
+  
+     
+
+
+
+
+
+        
+        
+      </div>
+
+ <% end  %>
+
+
+
+
+     
+    </div>
+
+ <p class="notice"><%= notice %></p>
+       <p class="alert"><%= alert %></p>
+
+
+    
+   
+      <%= yield %>
+
+
+
+
+<div class="footer">
+Copyright Starflask
+</div>
+
+
+
+
+
+
+
+</body>
+</html>

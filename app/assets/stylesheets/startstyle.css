@@ -1,0 +1,141 @@
+body{
+padding-top:50px;
+}
+
+.container{
+ /*background: transparent url('/test/img/website_container.png') repeat-y;*/
+ max-width: 960px;
+ padding: 10px 0px;
+}
+
+.content{
+ margin: 40px ;
+  padding: 20px ;
+}
+
+
+.one-fourth {
+width: 25%;
+}
+
+.three-fourths {
+width: 75%;
+}
+
+.one-half {
+width: 50%;
+}
+
+.one-third {
+width: 34%;
+}
+.two-thirds {
+width: 66%;
+}
+
+.column {
+float: left;
+padding-left: 10px;
+padding-right: 10px;
+}
+
+.hugeslogan{
+font-size:72px;
+color:black;
+line-height: 70px;
+
+
+}
+
+
+.footer {
+padding-top: 40px;
+padding-bottom: 40px;
+margin-top: 100px;
+color: #777;
+text-align: center;
+border-top: 1px solid #e5e5e5;
+}
+
+
+.fill{
+ display: block;
+}
+
+.hovercolor:hover{
+background-color:#eee;
+}
+
+.border-thin{
+	border: 1px solid #555;
+	padding: 2px;
+}
+
+.crop {
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+}
+
+.navbar-brand{
+
+	font-size: 22px;
+
+}
+
+
+/*
+.activitybar{
+list-style: none;
+padding-left:0px;
+}
+
+
+.activitybar li{
+  width:100%;
+  padding:4px;
+  margin:2px;
+  color: #fff;
+
+border-radius: 3px;
+
+}
+
+.joinedgroup{
+background-color: #A4BD0A;
+}
+
+.watching{
+background-color: #FF8E0A;
+}
+
+.leftgroup{
+background-color: #FF2E00;
+}
+
+.gainedshare{
+background-color: #0599B0;
+}*/
+
+.activitytimestamp{
+float:right;
+font-color:#ccc;
+font-size:14px;
+font-style: italic;
+}
+
+.memberlist{
+list-style: none;
+padding-left:0px;
+
+}
+
+.memberlist li{
+ width:100%;
+  padding:4px;
+  margin:2px;
+  color: #111;
+
+border-radius: 3px;
+
+}

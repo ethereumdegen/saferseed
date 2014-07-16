@@ -1,0 +1,129 @@
+
+
+<%
+
+
+
+  def justmessaged(usr)
+      Privatemessage.all.each do |msg|
+        if(current_user == msg.getSendingUser and msg.getReceivingUser == usr and  msg.created_at.to_time > Time.now.ago(10.seconds) )
+				
+        	
+            return true
+        end
+
+      end
+    return false
+  end
+
+  
+
+%>
+
+
+
+
+<% thisuser = User.find(params[:id]) %>
+
+
+<div class="container">
+
+<% if(thisuser) %>
+
+<div class="column two-thirds">
+
+
+
+   <div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading"><%=thisuser.getFirstName%>'s Groups</div>
+ 
+
+  <!-- List group -->
+  <ul class="list-group">
+<% Group.find_each do |group| %>
+    <%if (group.hasMember(thisuser)) %>
+  <li class="list-group-item hovercolor">   <a href="<%= group.getPageLink %>" class="fill"><%= group.getName %> </a></li> 
+    <% end %>
+<% end %>
+</ul>
+
+</div>
+
+
+
+<div class="panel panel-default">
+
+
+<% if(current_user) %>
+<% if(justmessaged(thisuser)) %>
+
+
+<div class="alert alert-success alert-dismissable">
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+  <strong>Success!</strong> Message was sent!
+</div>
+
+
+<% else %>
+
+<%= form_for :newmessage, url: {action: "createprivatemessage"}, html: {class: "form-group",id:"messageform"} do |f| %>
+
+<%= f.hidden_field :receivinguserid, :value => thisuser.getId %>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title"> Send <%= thisuser.getFirstName %> a private message
+    <%= f.submit "Submit" , class: "btn btn-mini btn-primary pull-right", style:"padding:3px;margin-top:-5px" %>
+  </h3>
+  </div>
+<div class="panel-body">
+   <%= f.text_area(:text, style: 'width:100%') %>
+</div>
+</div>
+
+<% end %>
+
+<% end %>
+
+
+<% end %>
+
+
+
+</div>
+
+</div>
+
+
+<div class="column one-third">
+
+
+  
+
+
+
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+
+<h2 style="text-align:center"> <%= thisuser.getFullName %>  <%  if(thisuser.createdRecently) %> <span class='label label-default'>New</span> <% end %> </h2>
+
+</div>
+<div class="panel-body">
+	
+	<ul class="list-group"> 
+	<li class="list-group-item" >Member for: <%=thisuser.getTimeSince%></li>
+	<li class="list-group-item">Email: <%= thisuser.getEmail %></li>
+	</ul>
+
+</div>
+</div>
+
+</div>
+
+
+<% end %>
+
+</div>
+

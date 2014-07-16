@@ -1,0 +1,85 @@
+<div class="container">
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">Register a New Group</div>
+
+<div class="panel-body">
+
+<% if(@errormessage) %> 
+
+
+
+<div class="alert alert-danger alert-dismissable">
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+  <strong>Error!</strong>  <%= @errormessage %>
+</div>
+
+<% end %>
+
+
+
+<%= form_for :newgroup, url: {action: "create"}, html: {class: "form-group"} do |f| %>
+<div class="form-group">
+   <label for="InputName">Company Name</label>
+  <%= f.text_field :name   , class: "form-control", placeholder:"Company Inc."%>
+  </div>
+
+  <div class="form-group">
+   <label for="InputName">Location</label>
+  <%= f.text_field :location   , class: "form-control", placeholder:"Pasadena, CA"%>
+  </div>
+
+    <div class="form-group">
+   <label for="InputName">Web Address</label>
+  <%= f.text_field :webaddress   , class: "form-control", placeholder:"www.domain.com"%>
+  </div>
+
+<div class="form-group">
+   <label for="InputEmail">Company Email</label>
+  <%= f.text_field :email  , class: "form-control", placeholder:"owner@domain.com" %>
+</div>
+ 
+<%  uploadFileImage = false %>
+<% if(uploadFileImage) %>
+ <div class="form-group">
+    <label for="exampleInputFile">Logo Image</label>
+    <input type="file" id="InputLogo">
+    <p class="help-block">File size must be less than 100kb.</p>
+  </div>
+<% end %>
+
+<div class="form-group">
+   <label for="InputEmail">Logo Image URL</label>
+  <%= f.text_field :imageurl  , class: "form-control", placeholder:"logo.jpg" %>
+   <p class="help-block">Image should be 100 x 100</p>
+</div>
+
+
+  <div class="checkbox">
+    <label>
+      <input type="checkbox"> Make this group private
+    </label>
+  </div>
+
+
+
+  <%= f.submit "Create" , class: "btn btn-success", style:"width:100%" %>
+
+<% end %>
+
+
+ 
+
+
+
+
+
+
+</div>
+
+</div>
+
+</div>
+
+</div>

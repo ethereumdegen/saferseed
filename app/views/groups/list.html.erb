@@ -1,0 +1,39 @@
+<div class="container">
+
+<h2>All registered groups</h2>
+
+<table class="table">
+
+  <% Group.all.each do |group| %>
+
+<tr>
+  <td><a href="<%= @BASEURL %>groups/<%= group.getName %>" class="fill"> <%= group.getName %> </a></td>
+  <td><%= group.getUserIdOfOwner %></td> 
+  <td> </td>
+  </tr>
+
+<%end%>
+
+
+</table>
+
+<h2>All registered users</h2>
+
+<table class="table">
+
+  <% User.all.each do |user| %>
+
+<tr>
+  <td> <a href="<%= user.getPageLink %>"><%= user.getFirstName %> </a></td>
+  <td> <%= user.getId %> </td> 
+  <td> </td>
+  </tr>
+
+<%end%>
+
+
+</table>
+
+</div>
+
+
